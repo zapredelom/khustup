@@ -1,0 +1,9 @@
+{
+    "version": 4,
+    "vendor": {
+        "conan": {}
+    },
+    "include": [
+        "C:\\Users\\zapre\\sources\\khustup\\build\\generators\\CMakePresets.json"
+    ]
+}
