@@ -17,8 +17,6 @@ public:
     [[nodiscard]] uint64_t getElapsedTimeInMilliseconds() noexcept;
     [[nodiscard]] uint64_t getElapsedTimeInMicroseconds() noexcept;
 
-    //~Measurer() noexcept;
-
 private:
     template <typename Duration>
     [[nodiscard]] uint64_t getElapsedTime() noexcept;

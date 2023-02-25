@@ -1,10 +1,10 @@
 #pragma once
 
-#include "models/draw_point_model.h"
+#include "models/draw_point.h"
 #include "utils/type_aliases.h"
 
 namespace khustup::models {
-class DrawUpdate {
+class  DrawUpdate {
     using TimeStamp = khustup::utils::TimeStamp;
 
 public:

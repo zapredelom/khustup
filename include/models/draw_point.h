@@ -7,8 +7,8 @@ public:
     DrawPoint(const DrawPoint&) noexcept = default;
     DrawPoint(const Coordinate& coordinate, bool isOn = true) noexcept;
 
-    [[nodiscard]] Coordinate getCoorodinate() const noexcept ;
-    [[nodiscard]] constexpr bool isOn() const noexcept;
+    [[nodiscard]] Coordinate getCoorodinate() const noexcept;
+    constexpr bool isOn() const noexcept { return _isOn; }
 
     ~DrawPoint() noexcept = default;
 

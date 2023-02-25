@@ -1,4 +1,4 @@
-#include "models/draw_point_model.h"
+#include "models/draw_point.h"
 
 #include <type_traits>
 
@@ -10,5 +10,5 @@ DrawPoint::DrawPoint(const Coordinate& coordinate, bool isOn) noexcept
 
 Coordinate DrawPoint::getCoorodinate() const noexcept { return _coordinate; }
 
-constexpr bool DrawPoint::isOn() const noexcept { return _isOn; }
+
 

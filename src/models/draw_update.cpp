@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "models/draw_update_model.h"
+#include "models/draw_update.h"
 using namespace khustup::models;
 
 namespace km {

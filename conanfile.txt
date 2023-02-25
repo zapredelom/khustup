@@ -1,5 +1,6 @@
 [requires]
 gtest/1.13.0
+opencv/4.5.5
 
 [imports]
 dll, *.dll -> ./bin @ folder=True
