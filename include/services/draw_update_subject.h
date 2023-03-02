@@ -19,8 +19,8 @@ public:
     virtual ~IDrawUpdateSubject() noexcept = default;
 
     virtual void notifyAll(const khustup::models::DrawUpdate& update) noexcept;
-    virtual void addObserver(IDrawUpdateObserver* observer) noexcept;
-    virtual void removeObserver(IDrawUpdateObserver* observer) noexcept;
+    void addObserver(IDrawUpdateObserver* observer) noexcept;
+    void removeObserver(IDrawUpdateObserver* observer) noexcept;
 
 private:
     std::unordered_set<IDrawUpdateObserver*> _observers;

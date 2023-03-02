@@ -11,8 +11,8 @@
 #include "services/simulation/simulation.h"
 #include "utils/measurer.h"
 
-static constexpr int canvasHeight = 64;
-static constexpr int canvaesWidth = 64;
+static constexpr int canvasHeight = 512;
+static constexpr int canvaesWidth = 512;
 static constexpr int simDuration = 30000;
 
 class CvShow : public khustup::services::IDrawUpdateObserver {

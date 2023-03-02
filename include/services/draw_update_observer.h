@@ -9,9 +9,9 @@ class IDrawUpdateObserver {
 public:
     IDrawUpdateObserver() noexcept = default;
     IDrawUpdateObserver(IDrawUpdateObserver&&) noexcept = default;
-    IDrawUpdateObserver(const IDrawUpdateObserver&) noexcept = delete;
-
     IDrawUpdateObserver& operator=(IDrawUpdateObserver&&) noexcept = default;
+
+    IDrawUpdateObserver(const IDrawUpdateObserver&) noexcept = delete;
     IDrawUpdateObserver& operator=(const IDrawUpdateObserver&) noexcept = delete;
 
     virtual ~IDrawUpdateObserver() noexcept = default;
