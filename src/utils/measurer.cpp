@@ -22,6 +22,7 @@ void Measurer::reset() noexcept {
     _is_paused = false;
 }
 
+
 [[nodiscard]] uint64_t Measurer::getElapsedTimeInSeconds() noexcept {
     return getElapsedTime<std::chrono::seconds>();
 }

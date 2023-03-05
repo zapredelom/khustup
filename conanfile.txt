@@ -1,6 +1,6 @@
 [requires]
 gtest/1.13.0
-opencv/4.5.5
+#opencv/4.5.5
 
 [imports]
 dll, *.dll -> ./bin @ folder=True
@@ -8,6 +8,14 @@ bin, *.exe -> ./bin @ folder=True
 bin, *.dll -> ./bin @ folder=True
 bin, *.so* -> ./bin @ folder=True
 bin, *.dylib -> ./bin @ folder=True
+
+[options]
+opencv:with_ffmpeg=False
+opencv:dnn=False
+opencv:neon=False
+opencv:with_jpeg=False
+opencv:with_openexr=False
+opencv:with_webp=False
 
 [layout]
 cmake_layout

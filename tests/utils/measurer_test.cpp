@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "utils/measurer.h"
+#include <thread>
 TEST(Measurer, pause)
 {
     khustup::utils::Measurer measurer;

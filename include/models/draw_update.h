@@ -3,6 +3,8 @@
 #include "models/draw_point.h"
 #include "utils/type_aliases.h"
 
+#include <vector>
+
 namespace khustup::models {
 class  DrawUpdate {
     using TimeStamp = khustup::utils::TimeStamp;

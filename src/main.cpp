@@ -9,10 +9,16 @@
 #include "services/draw_update_observer.h"
 #include "services/drawer.h"
 #include "services/simulation/simulation.h"
+#include "services/simulation/webcam_reader.h"
+#include "services/rpi/rpi_drawer.h"
+#include "services/scale_decorator.h"
 #include "utils/measurer.h"
 
-static constexpr int canvasHeight = 512;
-static constexpr int canvaesWidth = 512;
+using namespace std::chrono_literals;
+static constexpr int canvasHeight = 360;
+static constexpr int canvaesWidth = 440;
+static constexpr int rpiHeight = 16;
+static constexpr int rpiWidth = 16;
 static constexpr int simDuration = 30000;
 
 class CvShow : public khustup::services::IDrawUpdateObserver {
@@ -22,14 +28,11 @@ public:
         static std::vector<cv::Vec3b> colors = generateColors(canvaesWidth);
         int count = 0;
         for (auto& point : update.getPoints()) {
-            mat.at<cv::Vec3b>(point.getCoorodinate().x(), point.getCoorodinate().y()) =
-                colors[point.getCoorodinate().y() % canvaesWidth];
-            if (++count > 5) {
-                cv::imshow("canvas", mat);
-                cv::waitKey(1);
-                count = 0;
-            }
+            mat.at<cv::Vec3b>(point.getCoorodinate().y(), point.getCoorodinate().x()) = {point.getColor().R, point.getColor().G, point.getColor().B};
+                //colors[point.getCoorodinate().y() % canvaesWidth];
         }
+	cv::imshow("canvas", mat);
+	cv::waitKey(1);
     }
 
 private:
@@ -45,68 +48,25 @@ private:
     }
 };
 
-void helperShowCurrentcCanvas(const khustup::models::DrawUpdate& update) {}
 int main() {
 
     khustup::models::DrawCanvas canvas(canvasHeight, canvaesWidth);
     khustup::services::Drawer drawer(canvas);
     CvShow cvShow;
+    khustup::services::rpi::RpiDrawObserver rpiDrawer(rpiHeight, rpiWidth);
+    khustup::services::ScaleDecorator scaler(&rpiDrawer, canvasHeight, canvaesWidth, rpiHeight, rpiWidth);
 
-    khustup::simulation::Simulation simulation(canvasHeight, canvaesWidth, 50);
+    //khustup::simulation::WebCamReader simulation(canvasHeight, canvaesWidth, 15); // there is issue with reading camera
+    khustup::simulation::Simulation simulation(canvasHeight, canvaesWidth, 15);
 
     simulation.addObserver(&drawer);
     simulation.addObserver(&cvShow);
+    simulation.addObserver(&scaler);
+    rpiDrawer.setBrightness(20);
 
     simulation.start(simDuration);
+    std::this_thread::sleep_for(30s);
 
     return 0;
 }
 
-// #define working_code \
-//     int ii = 0; while(ii++<2){ \
-//     int x = 2;       \
-//     int y = 4;       \
-//     volatile int z = x + y;};
-
-// class multiplayerBase {
-// public:
-//     virtual void mul() = 0;
-// };
-
-// class multiplayer : public multiplayerBase {
-// public:
-//     void mul() override { working_code }
-// };
-
-// template <typename T>
-// void caller(T&& t) {
-//     static_assert(std::is_invocable_r_v<void, T>, "T must be invocable");
-//     volatile int i = 0;
-//     while (i++ < 1) {
-//         t();
-//     }
-// }
-
-// void test() { working_code }
-
-// int main() {
-//     khustup::utils::Measurer measurer;
-
-//     measurer.reset();
-//     std::function ff([]() { working_code });
-//     caller(ff);
-//     std::cout << " std::functino " << measurer.getElapsedTimeInMicroseconds() << std::endl;
-
-//     measurer.reset();
-//     caller([]() { working_code });
-//     std::cout << " lambda " << measurer.getElapsedTimeInMicroseconds() << std::endl;
-
-//     measurer.reset();
-//     caller(test);
-//     std::cout << " function ptr " << measurer.getElapsedTimeInMicroseconds() << std::endl;
-
-//     measurer.reset();
-//     multiplayerBase* mp = new multiplayer();
-//     caller([&]() { mp->mul(); });
-//     std::cout << " virtual function " << measurer.getElapsedTimeInMicroseconds() << std::endl;
-// }
