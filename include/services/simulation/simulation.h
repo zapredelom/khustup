@@ -35,7 +35,7 @@ private:
     std::uniform_int_distribution<> _dis_init;
     std::uniform_int_distribution<> _dis_draw;
     std::uniform_int_distribution<> _0_1;
-    std::uniform_int_distribution<uint8_t> _dist_color;
+    std::uniform_int_distribution<unsigned short> _dist_color;
 
     khustup::models::DrawPoint _lastCoordinate;
 
