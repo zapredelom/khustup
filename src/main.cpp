@@ -1,4 +1,4 @@
-#include <QApplication>
+//#include <QApplication>
 #include <algorithm>
 #include <iostream>
 #include <opencv2/core.hpp>
@@ -13,9 +13,10 @@
 #include "services/simulation/webcam_reader.h"
 // #include "services/rpi/rpi_drawer.h"
 #include <boost/asio.hpp>
+#include <boost/array.hpp>
 
 #include "services/scale_decorator.h"
-#include "ui/draw_main_window.h"
+//#include "ui/draw_main_window.h"
 #include "utils/measurer.h"
 
 using namespace std::chrono_literals;
@@ -51,6 +52,8 @@ private:
         return colors;
     }
 };
+using namespace boost::asio;
+using ip::tcp;
 
 int main(int argc, char* argv[]) {
     // khustup::models::DrawCanvas canvas(canvasHeight, canvaesWidth);
@@ -70,28 +73,43 @@ int main(int argc, char* argv[]) {
 
     // simulation.start(simDuration);
     // std::this_thread::sleep_for(30s);
-    try {
-        boost::asio::io_context io_context;
 
-        boost::asio::ip::tcp::resolver resolver(io_context);
-        boost::asio::ip::tcp::resolver::results_type endpoints = resolver.resolve("google.com", "daytime");
-        boost::asio::ip::tcp::socket socket(io_context);
-        boost::asio::connect(socket, endpoints);
+  try
+  {
 
-        for (;;) {
-            std::array<char, 128> buf;
-            boost::system::error_code error;
-            size_t len = socket.read_some(boost::asio::buffer(buf), error);
-            std::cout << len << std::endl;
-            if (error == boost::asio::error::eof) {
-                std::cout << "Connection closed cleanly by peer.\n";
-                break;
-            } else if (error)
-                throw boost::system::system_error(error);  // Some other error.
-            std::cout.write(buf.data(), len);
-        }
-    } catch (std::exception& e) {
-        std::cerr << e.what() << std::endl;
-    }
+    boost::asio::io_context io_context;
+
+    tcp::resolver resolver(io_context);
+    tcp::resolver::results_type endpoints =
+      resolver.resolve("", "1234");
+
+    tcp::socket socket(io_context);
+    boost::asio::connect(socket, endpoints);
+    boost::system::error_code error;
+    boost::array<char, 5> buf{'h','e','l','l','o'};
+    socket.write_some(boost::asio::buffer(buf), error);
+
+
+
+  //   for (;;)
+  //   {
+  //     boost::array<char, 300> buf;
+
+  //     size_t len = socket.read_some(boost::asio::buffer(buf), error);
+
+  //     if (error == boost::asio::error::eof)
+  //       break; // Connection closed cleanly by peer.
+  //     else if (error)
+  //       throw boost::system::system_error(error); // Some other error.
+
+  //     std::cout.write(buf.data(), len);
+  //     std::cout<<std::endl;
+  //   }
+  }
+  catch (std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+  }
+
     return 0;
 }

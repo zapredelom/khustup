@@ -1,18 +1,18 @@
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-find_package(opencv REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(Qt6  REQUIRED)
-find_package(boost REQUIRED)
+find_package(Boost REQUIRED)
 
 add_subdirectory(utils)
 add_subdirectory(models)
 add_subdirectory(services)
-add_subdirectory(ui)
+#add_subdirectory(ui)
 
 
 add_executable(main main.cpp)
-add_dependencies(main utils models services ui)
+add_dependencies(main utils models services )
 
-target_include_directories(main PRIVATE ${rpi_ws281x_SOURCE_DIR})
+target_include_directories(main PRIVATE ${rpi_ws281x_SOURCE_DIR} ${Boost_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 
-target_link_libraries(main ui models services utils opencv::opencv qt::qt boost::boost ) # pthread ws2811)
+target_link_libraries(main  models services utils ${OpenCV_LIBS} ${Qt_Libs} boost::boost) # pthread ws2811)

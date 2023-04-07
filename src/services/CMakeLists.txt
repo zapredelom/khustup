@@ -8,6 +8,7 @@ set (sources
 )
 add_library(services ${sources})
 target_include_directories(services PRIVATE ${rpi_ws281x_SOURCE_DIR})
-find_package(opencv REQUIRED)
-target_link_libraries(services PRIVATE opencv::opencv)
+find_package(OpenCV REQUIRED)
+target_include_directories(services PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(services PRIVATE ${OpenCV_LIBS})
 
