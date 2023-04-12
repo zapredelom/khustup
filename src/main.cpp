@@ -1,4 +1,4 @@
-//#include <QApplication>
+// #include <QApplication>
 #include <algorithm>
 #include <iostream>
 #include <opencv2/core.hpp>
@@ -12,11 +12,12 @@
 #include "services/simulation/simulation.h"
 #include "services/simulation/webcam_reader.h"
 // #include "services/rpi/rpi_drawer.h"
-#include <boost/asio.hpp>
 #include <boost/array.hpp>
+#include <boost/asio.hpp>
 
 #include "services/scale_decorator.h"
-//#include "ui/draw_main_window.h"
+// #include "ui/draw_main_window.h"
+#include "networking./draw_client.h"
 #include "utils/measurer.h"
 
 using namespace std::chrono_literals;
@@ -56,6 +57,7 @@ using namespace boost::asio;
 using ip::tcp;
 
 int main(int argc, char* argv[]) {
+  std::cout<<"entering main"<<std::endl;
     // khustup::models::DrawCanvas canvas(canvasHeight, canvaesWidth);
     // khustup::services::Drawer drawer(canvas);
     // CvShow cvShow;
@@ -74,42 +76,34 @@ int main(int argc, char* argv[]) {
     // simulation.start(simDuration);
     // std::this_thread::sleep_for(30s);
 
-  try
-  {
+    try {
+        if (argc != 3) {
+            std::cerr << "Usage: chat_client <host> <port>\n";
+            return 1;
+        }
 
-    boost::asio::io_context io_context;
+        boost::asio::io_context io_context;
 
-    tcp::resolver resolver(io_context);
-    tcp::resolver::results_type endpoints =
-      resolver.resolve("", "1234");
+        tcp::resolver resolver(io_context);
+        auto endpoints = resolver.resolve(argv[1], argv[2]);
+        DrawClient c(io_context, endpoints);
 
-    tcp::socket socket(io_context);
-    boost::asio::connect(socket, endpoints);
-    boost::system::error_code error;
-    boost::array<char, 5> buf{'h','e','l','l','o'};
-    socket.write_some(boost::asio::buffer(buf), error);
+        std::thread t([&io_context]() { io_context.run(); });
 
+        char* line = new char[DrawUpdateRawData::max_body_length + 1];
+        while (std::cin.getline(line, DrawUpdateRawData::max_body_length + 1)) {
+            DrawUpdateRawData msg;
+            msg.body_length(std::strlen(line));
+            std::memcpy(msg.body(), line, msg.body_length());
+            msg.encode_header();
+            c.write(msg);
+        }
 
-
-  //   for (;;)
-  //   {
-  //     boost::array<char, 300> buf;
-
-  //     size_t len = socket.read_some(boost::asio::buffer(buf), error);
-
-  //     if (error == boost::asio::error::eof)
-  //       break; // Connection closed cleanly by peer.
-  //     else if (error)
-  //       throw boost::system::system_error(error); // Some other error.
-
-  //     std::cout.write(buf.data(), len);
-  //     std::cout<<std::endl;
-  //   }
-  }
-  catch (std::exception& e)
-  {
-    std::cerr << e.what() << std::endl;
-  }
+        c.close();
+        t.join();
+    } catch (std::exception& e) {
+        std::cerr << "Exception: " << e.what() << "\n";
+    }
 
     return 0;
 }

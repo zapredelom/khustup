@@ -1,16 +1,27 @@
 #include "services/draw_update_subject.h"
+#include "networking/draw_client.h"
 
+#include <boost/asio.hpp>
+
+#include <string>
 namespace khustup::models {
 class DrawUpdate;
 }
 
 namespace services::sercies {
-class DrawNetworkObserver : public IDrawUpdateSubject {
+class DrawNetworkSubject : public IDrawUpdateSubject {
 public:
-    DrawNetworkObserver() = default;
-    ~DrawNetworkObserver() = default;
+    DrawNetworkSubject(const std::string &host, const std::string &port) noexcept;
+    ~DrawNetworkSubject();
 
-    void update(const models::DrawUpdate& update) noexcept override;
+
+private:
+    std::string _host;
+    std::string _port;
+    boost::asio::ip::tcp::resolver _resolver;
+    boost::asio::io_context _io_context;
+    std::thread _io_context_thread;
+    DrawClient _client;
 
 };
 }
