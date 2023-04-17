@@ -14,5 +14,5 @@ add_executable(main main.cpp)
 add_dependencies(main utils models services networking)
 
 target_include_directories(main PRIVATE ${rpi_ws281x_SOURCE_DIR} ${Boost_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
-
-target_link_libraries(main models services utils networking ${OpenCV_LIBS} ${Qt_Libs} boost::boost) # pthread ws2811)
+message ("OpenCV_LIBS: ${OpenCV_LIBS}")
+target_link_libraries(main  models services utils networking  ${OpenCV_LIBS} ${Qt_Libs} boost::boost) # pthread ws2811)

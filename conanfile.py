@@ -46,6 +46,7 @@ class Khustup(ConanFile):
         self.requires("gtest/1.13.0")
         self.requires("boost/1.81.0")
         self.requires("libwebp/1.3.0")
+        #self.requires("opencv/4.5.5")
 
     def layout(self):
         cmake_layout(self, build_folder="build", src_folder=".")

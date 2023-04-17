@@ -10,5 +10,12 @@
         "program": "${workspaceFolder}/build/src/Debug/main.exe",
         "args": ["localhost", "8080"],
         "cwd": "${workspaceFolder}"
+    },{
+        "type": "cppvsdbg",
+        "request": "launch",
+        "name": "win32_rel_deb",
+        "program": "${workspaceFolder}/build/src/RelWithDebInfo/main.exe",
+        "args": ["localhost", "8080"],
+        "cwd": "${workspaceFolder}"
     }]
 }

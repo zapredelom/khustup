@@ -11,6 +11,8 @@
 #include "services/drawer.h"
 #include "services/simulation/simulation.h"
 #include "services/simulation/webcam_reader.h"
+#include "services/draw_network_observer.h"
+#include "services/draw_network_subject.h"
 // #include "services/rpi/rpi_drawer.h"
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
@@ -58,52 +60,56 @@ using ip::tcp;
 
 int main(int argc, char* argv[]) {
   std::cout<<"entering main"<<std::endl;
-    // khustup::models::DrawCanvas canvas(canvasHeight, canvaesWidth);
-    // khustup::services::Drawer drawer(canvas);
-    // CvShow cvShow;
-    // //khustup::services::rpi::RpiDrawObserver rpiDrawer(rpiHeight, rpiWidth);
-    // //khustup::services::ScaleDecorator scaler(&rpiDrawer, canvasHeight, canvaesWidth, rpiHeight, rpiWidth);
-    // //khustup::simulation::WebCamReader simulation(canvasHeight, canvaesWidth, 15); // there is issue with reading
-    // camera
+    khustup::models::DrawCanvas canvas(canvasHeight, canvaesWidth);
+    khustup::services::Drawer drawer(canvas);
+    khustup::services::DrawNetworkObserver netObserver("localhost", "8080");
+    khustup::services::DrawNetworkSubject netSubject("localhost", "8080");
+    CvShow cvShow;
+    //khustup::services::rpi::RpiDrawObserver rpiDrawer(rpiHeight, rpiWidth);
+    //khustup::services::ScaleDecorator scaler(&rpiDrawer, canvasHeight, canvaesWidth, rpiHeight, rpiWidth);
+    //khustup::simulation::WebCamReader simulation(canvasHeight, canvaesWidth, 15); // there is issue with reading
 
-    // khustup::simulation::Simulation simulation(canvasHeight, canvaesWidth, 15);
+    khustup::simulation::Simulation simulation(canvasHeight, canvaesWidth, 15);
 
-    // simulation.addObserver(&drawer);
-    // simulation.addObserver(&cvShow);
-    // //simulation.addObserver(&scaler);
-    // //rpiDrawer.setBrightness(20);
+    simulation.addObserver(&drawer);
+    //simulation.addObserver(&cvShow);
+    simulation.addObserver(&netObserver);
 
-    // simulation.start(simDuration);
-    // std::this_thread::sleep_for(30s);
+    netSubject.addObserver(&cvShow);
+    //simulation.addObserver(&scaler);
+    //rpiDrawer.setBrightness(20);
+    std::this_thread::sleep_for(4s);
+    simulation.start(simDuration);
+    std::this_thread::sleep_for(30s);
 
-    try {
-        if (argc != 3) {
-            std::cerr << "Usage: chat_client <host> <port>\n";
-            return 1;
-        }
+    // try {
+    //     if (argc != 3) {
+    //         std::cerr << "Usage: chat_client <host> <port>\n";
+    //         return 1;
+    //     }
 
-        boost::asio::io_context io_context;
+    //     boost::asio::io_context io_context;
 
-        tcp::resolver resolver(io_context);
-        auto endpoints = resolver.resolve(argv[1], argv[2]);
-        DrawClient c(io_context, endpoints);
+    //     tcp::resolver resolver(io_context);
+    //     auto endpoints = resolver.resolve(argv[1], argv[2]);
+    //     DrawClient c(io_context, endpoints);
 
-        std::thread t([&io_context]() { io_context.run(); });
+    //     std::thread t([&io_context]() { io_context.run(); });
 
-        char* line = new char[DrawUpdateRawData::max_body_length + 1];
-        while (std::cin.getline(line, DrawUpdateRawData::max_body_length + 1)) {
-            DrawUpdateRawData msg;
-            msg.body_length(std::strlen(line));
-            std::memcpy(msg.body(), line, msg.body_length());
-            msg.encode_header();
-            c.write(msg);
-        }
+    //     char* line = new char[DrawUpdateRawData::max_body_length + 1];
+    //     while (std::cin.getline(line, DrawUpdateRawData::max_body_length + 1)) {
+    //         DrawUpdateRawData msg;
+    //         msg.body_length(std::strlen(line));
+    //         std::memcpy(msg.body(), line, msg.body_length());
+    //         msg.encode_header();
+    //         c.write(msg);
+    //     }
 
-        c.close();
-        t.join();
-    } catch (std::exception& e) {
-        std::cerr << "Exception: " << e.what() << "\n";
-    }
+    //     c.close();
+    //     t.join();
+    // } catch (std::exception& e) {
+    //     std::cerr << "Exception: " << e.what() << "\n";
+    // }
 
     return 0;
 }

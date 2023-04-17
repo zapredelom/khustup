@@ -7,8 +7,8 @@
 class DrawUpdateRawData {
 public:
     static constexpr std::size_t header_length = 4;
-    static constexpr std::size_t max_body_length =
-        1920 * 1200 * (4 + sizeof(bool) + 2 * sizeof(int)) /*image max size*/ + 27 /*date YYYY/MM/DD/HH/MM/SS/MS/+UTC*/;
+    static constexpr std::size_t max_body_length = 4096 ;
+        //1920 * 1200 * (4 + sizeof(bool) + 2 * sizeof(int)) /*image max size*/ + 27 /*date YYYY/MM/DD/HH/MM/SS/MS/+UTC*/;
 
     DrawUpdateRawData();
 
