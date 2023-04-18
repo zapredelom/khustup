@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.18)
 
 project(khustup)
 
-IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
+if(MSVC)
+else()
   include_directories(/usr/include/opencv4)
   include(FetchContent)
   FetchContent_Declare(
@@ -13,14 +14,13 @@ IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
 endif()
 
 set(CMAKE_CXX_STANDARD 20)
-add_compile_options(/experimental:module)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# force MD for all configs
-add_compile_options(/MD)
-enable_testing()
+#enable_testing()
 
 if(MSVC)
+  add_compile_options(/experimental:module)
+  add_compile_options(/MD)
   list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/build/generators")
   list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/generators")
   list(APPEND CMAKE_PREFIX_PATH "C:/opencv/opencv/build/x64/vc16/lib")
