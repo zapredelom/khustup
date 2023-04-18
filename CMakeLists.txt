@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.18)
 
 project(khustup)
 
-if(MSVC)
-else()
+if(EXISTS /proc/cpuinfo)
+  file(READ /proc/cpuinfo CPU_INFO)
+  string(FIND ${CPU_INFO} "Hardware	: BCM" FOUND_INDEX)
+  if(FOUND_INDEX GREATER -1) 
   include_directories(/usr/include/opencv4)
   include(FetchContent)
   FetchContent_Declare(
@@ -11,6 +13,7 @@ else()
     GIT_REPOSITORY git@github.com:jgarff/rpi_ws281x.git
   )
   FetchContent_MakeAvailable(rpi_ws281x)
+  endif()
 endif()
 
 set(CMAKE_CXX_STANDARD 20)
