@@ -69,18 +69,20 @@ int main(int argc, char* argv[]) {
     //khustup::services::ScaleDecorator scaler(&rpiDrawer, canvasHeight, canvaesWidth, rpiHeight, rpiWidth);
     //khustup::simulation::WebCamReader simulation(canvasHeight, canvaesWidth, 15); // there is issue with reading
 
-    khustup::simulation::Simulation simulation(canvasHeight, canvaesWidth, 15);
+    //khustup::simulation::Simulation simulation(canvasHeight, canvaesWidth, 15);
 
-    simulation.addObserver(&drawer);
+    //simulation.addObserver(&drawer);
     //simulation.addObserver(&cvShow);
-    simulation.addObserver(&netObserver);
+    //simulation.addObserver(&netObserver);
 
     netSubject.addObserver(&cvShow);
+    netSubject.addObserver(&drawer);
     //simulation.addObserver(&scaler);
     //rpiDrawer.setBrightness(20);
     std::this_thread::sleep_for(4s);
-    simulation.start(simDuration);
+    //simulation.start(simDuration);
     std::this_thread::sleep_for(30s);
+
 
     // try {
     //     if (argc != 3) {
