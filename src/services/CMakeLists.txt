@@ -3,7 +3,9 @@
 if(MSVC)
 	set(rpi_sources "") 
 else()
+    if(FOUND_INDEX GREATER -1)
 	set(rpi_sources "${CMAKE_CURRENT_SOURCE_DIR}/rpi/rpi_drawer.cpp")
+    endif()
 endif()
 
 set(sources
@@ -16,7 +18,7 @@ set(sources
     ${CMAKE_CURRENT_SOURCE_DIR}/draw_network_observer.cpp
 )
 add_library(services ${sources})
-target_include_directories(services PRIVATE ${rpi_ws281x_SOURCE_DIR})
+target_include_directories(services PRIVATE  ${Boost_INCLUDE_DIRS} ${rpi_ws281x_SOURCE_DIR})
 find_package(OpenCV REQUIRED)
 target_include_directories(services PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(services PRIVATE ${boost_libs} ${OpenCV_LIBS})

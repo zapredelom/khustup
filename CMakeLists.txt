@@ -5,7 +5,16 @@ project(khustup)
 if(EXISTS /proc/cpuinfo)
   file(READ /proc/cpuinfo CPU_INFO)
   string(FIND ${CPU_INFO} "Hardware	: BCM" FOUND_INDEX)
-  if(FOUND_INDEX GREATER -1) 
+  if(FOUND_INDEX GREATER -1)
+    set(ON_RASBERRY_PI TRUE)
+  else()
+    set(ON_RASBERRY_PI FALSE)
+  endif()
+else()
+  set(ON_RASBERRY_PI FALSE)
+endif()
+
+if(ON_RASBERRY_PI)
   include_directories(/usr/include/opencv4)
   include(FetchContent)
   FetchContent_Declare(
@@ -13,17 +22,17 @@ if(EXISTS /proc/cpuinfo)
     GIT_REPOSITORY git@github.com:jgarff/rpi_ws281x.git
   )
   FetchContent_MakeAvailable(rpi_ws281x)
-  endif()
 endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#enable_testing()
+# force MD for all configs
 
 if(MSVC)
-  add_compile_options(/experimental:module)
   add_compile_options(/MD)
+  enable_testing()
+  add_compile_options(/experimental:module)
   list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/build/generators")
   list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/generators")
   list(APPEND CMAKE_PREFIX_PATH "C:/opencv/opencv/build/x64/vc16/lib")
