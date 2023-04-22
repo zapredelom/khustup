@@ -4,9 +4,11 @@
 
 #include "models/coordinate.h"
 #include "utils/measurer.h"
+#include "utils/type_aliases.h"
 using namespace khustup::simulation;
+using namespace khustup::utils;
 
-Simulation::Simulation(int height, int width, int updateFrequency) noexcept
+Simulation::Simulation(CoordinateType height, CoordinateType width, int updateFrequency) noexcept
     : _height(height),
       _width(width),
       _gen(_rd()),
@@ -16,7 +18,7 @@ Simulation::Simulation(int height, int width, int updateFrequency) noexcept
       _dis_draw(-_step, _step),
       _0_1(0, 1),
       _dist_color(50, 200),
-      _lastCoordinate({_height / 2, _width / 2}) {}
+      _lastCoordinate({static_cast<CoordinateType>(_height / 2), static_cast<CoordinateType>(_width / 2)}) {}
 
 void Simulation::start(uint64_t simulationDurationInMilliseconds) noexcept {
     _keep_sumulating = true;

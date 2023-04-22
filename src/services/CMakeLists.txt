@@ -1,11 +1,7 @@
 # file(GLOB_RECURSE sources
 # ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp )
-if(MSVC)
-	set(rpi_sources "") 
-else()
-    if(FOUND_INDEX GREATER -1)
+if(ON_RASBERRY_PI)
 	set(rpi_sources "${CMAKE_CURRENT_SOURCE_DIR}/rpi/rpi_drawer.cpp")
-    endif()
 endif()
 
 set(sources

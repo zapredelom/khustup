@@ -1,5 +1,6 @@
 #include "networking/draw_update_raw_data.h"
 #include "networking/draw_client.h"
+#include "utils/type_aliases.h"
 
 #include <boost/asio.hpp>
 #include <cstdlib>
@@ -9,6 +10,7 @@
 
 
 using boost::asio::ip::tcp;
+using namespace khustup::utils;
 
 typedef std::deque<DrawUpdateRawData> DrawUpdateRawData_queue;
 
@@ -20,7 +22,8 @@ void DrawClient::write(const khustup::models::DrawUpdate& msg) {
     std::cout<<"to network and beyound\n";
     const auto& points = msg.getPoints();
     int offset = 0;
-    char* data = write_msg_.body();
+    DrawUpdateRawData write_msg;
+    char* data = write_msg.body();
     for(const auto& point : points) {
         const auto& color = point.getColor();
         memcpy(data + offset, &color.R, sizeof(uint8_t));
@@ -37,27 +40,28 @@ void DrawClient::write(const khustup::models::DrawUpdate& msg) {
         const auto& coord = point.getCoorodinate();
         auto x = coord.x();
         auto y = coord.y();
-        memcpy(data + offset, &x, sizeof(int));
+        memcpy(data + offset, &x, sizeof(CoordinateType));
         offset += sizeof(int);
-        memcpy(data + offset, &y, sizeof(int));
+        memcpy(data + offset, &y, sizeof(CoordinateType));
         offset += sizeof(int);
 
     }
-    write_msg_.body_length(offset);
-    write_msg_.encode_header();
-    write(write_msg_);
+    write_msg.body_length(offset);
+    write_msg.encode_header();
+    write(std::move(write_msg));
 
 }
 
-void DrawClient::write(const DrawUpdateRawData& msg) {
-    boost::asio::post(io_context_, [this, msg]() {
+void DrawClient::write(DrawUpdateRawData&& msg) {
+ boost::asio::post(io_context_, [this, msg_ = std::move(msg)]() mutable {
         bool write_in_progress = !write_msgs_.empty();
-        write_msgs_.push_back(msg);
+        write_msgs_.push_back(std::move(msg_));
         if (!write_in_progress) {
             do_write();
         }
     });
 }
+
 
 void DrawClient::close() {
     boost::asio::post(io_context_, [this]() { socket_.close(); });
@@ -120,7 +124,7 @@ void DrawClient::notifyOnReadCallback() {
         char* body = read_msg_.body();
         khustup::models::Color color;
         bool isOn;
-        int x  = -1, y = -1;
+        CoordinateType x  = -1, y = -1;
         auto iteration_size = 3*sizeof(uint8_t) + sizeof(bool) + 2 * sizeof(int);
         std::vector<khustup::models::DrawPoint> points;
         for (int i = 0; i < read_msg_.body_length(); i += iteration_size) {

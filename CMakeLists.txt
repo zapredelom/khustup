@@ -1,10 +1,13 @@
 cmake_minimum_required(VERSION 3.18)
-
 project(khustup)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(EXISTS /proc/cpuinfo)
   file(READ /proc/cpuinfo CPU_INFO)
   string(FIND ${CPU_INFO} "Hardware	: BCM" FOUND_INDEX)
+
   if(FOUND_INDEX GREATER -1)
     set(ON_RASBERRY_PI TRUE)
   else()
@@ -13,8 +16,10 @@ if(EXISTS /proc/cpuinfo)
 else()
   set(ON_RASBERRY_PI FALSE)
 endif()
+message(STATUS "ON_RASBERRY_PI: ${ON_RASBERRY_PI}")
 
 if(ON_RASBERRY_PI)
+  add_compile_definitions(ON_RASBERRY_PI)
   include_directories(/usr/include/opencv4)
   include(FetchContent)
   FetchContent_Declare(
@@ -24,15 +29,10 @@ if(ON_RASBERRY_PI)
   FetchContent_MakeAvailable(rpi_ws281x)
 endif()
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# force MD for all configs
-
 if(MSVC)
   add_compile_options(/MD)
-  enable_testing()
   add_compile_options(/experimental:module)
+  enable_testing()
   list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/build/generators")
   list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/build/generators")
   list(APPEND CMAKE_PREFIX_PATH "C:/opencv/opencv/build/x64/vc16/lib")
@@ -45,9 +45,7 @@ else()
 endif()
 
 add_subdirectory(src)
-
 # add_subdirectory(tests)
-
 
 set(INSTALL_INCLUDE_DIR include)
 install(TARGETS models

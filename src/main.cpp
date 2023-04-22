@@ -13,7 +13,9 @@
 #include "services/simulation/webcam_reader.h"
 #include "services/draw_network_observer.h"
 #include "services/draw_network_subject.h"
-// #include "services/rpi/rpi_drawer.h"
+#ifdef ON_RASBERY_PI
+#include "services/rpi/rpi_drawer.h"
+#endif
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 
@@ -69,49 +71,19 @@ int main(int argc, char* argv[]) {
     //khustup::services::ScaleDecorator scaler(&rpiDrawer, canvasHeight, canvaesWidth, rpiHeight, rpiWidth);
     //khustup::simulation::WebCamReader simulation(canvasHeight, canvaesWidth, 15); // there is issue with reading
 
-    //khustup::simulation::Simulation simulation(canvasHeight, canvaesWidth, 15);
+    khustup::simulation::Simulation simulation(canvasHeight, canvaesWidth, 150);
 
     //simulation.addObserver(&drawer);
     //simulation.addObserver(&cvShow);
-    //simulation.addObserver(&netObserver);
+    simulation.addObserver(&netObserver);
 
     netSubject.addObserver(&cvShow);
     netSubject.addObserver(&drawer);
     //simulation.addObserver(&scaler);
     //rpiDrawer.setBrightness(20);
     std::this_thread::sleep_for(4s);
-    //simulation.start(simDuration);
+    simulation.start(simDuration);
     std::this_thread::sleep_for(30s);
-
-
-    // try {
-    //     if (argc != 3) {
-    //         std::cerr << "Usage: chat_client <host> <port>\n";
-    //         return 1;
-    //     }
-
-    //     boost::asio::io_context io_context;
-
-    //     tcp::resolver resolver(io_context);
-    //     auto endpoints = resolver.resolve(argv[1], argv[2]);
-    //     DrawClient c(io_context, endpoints);
-
-    //     std::thread t([&io_context]() { io_context.run(); });
-
-    //     char* line = new char[DrawUpdateRawData::max_body_length + 1];
-    //     while (std::cin.getline(line, DrawUpdateRawData::max_body_length + 1)) {
-    //         DrawUpdateRawData msg;
-    //         msg.body_length(std::strlen(line));
-    //         std::memcpy(msg.body(), line, msg.body_length());
-    //         msg.encode_header();
-    //         c.write(msg);
-    //     }
-
-    //     c.close();
-    //     t.join();
-    // } catch (std::exception& e) {
-    //     std::cerr << "Exception: " << e.what() << "\n";
-    // }
 
     return 0;
 }
