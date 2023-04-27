@@ -16,7 +16,6 @@ if(EXISTS /proc/cpuinfo)
 else()
   set(ON_RASBERRY_PI FALSE)
 endif()
-message(STATUS "ON_RASBERRY_PI: ${ON_RASBERRY_PI}")
 
 if(ON_RASBERRY_PI)
   add_compile_definitions(ON_RASBERRY_PI)
