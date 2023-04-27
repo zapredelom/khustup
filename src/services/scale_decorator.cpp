@@ -1,10 +1,12 @@
 #include "services/scale_decorator.h"
 #include "models/draw_update.h"
+#include "utils/type_aliases.h"
 
 #include <cassert>
 #include <cmath>
 
 using namespace khustup::services;
+using namespace khustup::utils;
 ScaleDecorator::ScaleDecorator(IDrawUpdateObserver* wrappee, int inputHeight, int inputWidth, int outputHeight, int outputWidth)
     : _wrappee(wrappee)
     , _inputHeight(inputHeight)
@@ -29,7 +31,7 @@ khustup::models::DrawUpdate ScaleDecorator::doScale(const khustup::models::DrawU
     auto singlePointScaler  = [&] (const khustup::models::DrawPoint& point) -> khustup::models::DrawPoint {
                 float x = point.getCoorodinate().x();
                 float y = point.getCoorodinate().y();
-                auto coordinate = khustup::models::Coordinate{int(std::lroundf(x * widthScale)), int(std::lroundf(y * widthScale))};
+                auto coordinate = khustup::models::Coordinate{CoordinateType(std::lroundf(x * widthScale)), CoordinateType(std::lroundf(y * widthScale))};
                 return khustup::models::DrawPoint{coordinate, point.isOn(), point.getColor()};
             };
     std::ranges::transform(update.getPoints(), std::back_inserter(updated), singlePointScaler);

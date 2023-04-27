@@ -11,7 +11,7 @@ class  DrawUpdate {
 
 public:
     DrawUpdate() noexcept;
-    DrawUpdate(const DrawUpdate&) noexcept = delete;
+    DrawUpdate(const DrawUpdate&) noexcept = default;
     DrawUpdate(DrawUpdate&&) noexcept;
     DrawUpdate(const std::vector<DrawPoint>& points, TimeStamp timeStamp) noexcept;
 

@@ -1,0 +1,7 @@
+add_library(ui STATIC draw_main_window.cpp draw_scene.cpp)
+find_package(Qt6 CONFIG REQUIRED)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+target_include_directories(ui PRIVATE ${Qt6_INCLUDE_DIRS})
+target_link_libraries(ui PRIVATE ${Qt_Libs})

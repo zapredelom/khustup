@@ -4,6 +4,6 @@
         "conan": {}
     },
     "include": [
-        "C:\\Users\\zapre\\sources\\khustup\\build\\generators\\CMakePresets.json"
+        "C:\\Users\\zapre\\sources\\board\\khustup\\build\\generators\\CMakePresets.json"
     ]
 }
